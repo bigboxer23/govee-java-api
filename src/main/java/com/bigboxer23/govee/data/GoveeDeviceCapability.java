@@ -14,4 +14,6 @@ public class GoveeDeviceCapability {
 	private GoveeEventState eventState;
 
 	private GoveeParamenters parameters;
+
+	private GoveeOptionValue state;
 }
