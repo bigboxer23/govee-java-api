@@ -1,12 +1,17 @@
 package com.bigboxer23.govee;
 
 import com.bigboxer23.govee.data.GoveeAPIResponse;
+import com.bigboxer23.govee.data.GoveeDeviceStatusRequest;
+import com.bigboxer23.govee.data.GoveeDeviceStatusResponse;
 import com.bigboxer23.govee.data.GoveeGetDevicesResponse;
 import com.bigboxer23.utils.http.OkHttpUtil;
 import com.bigboxer23.utils.http.RequestBuilderCallback;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /** */
 public class GoveeApi {
 	private static final Logger logger = LoggerFactory.getLogger(GoveeApi.class);
-	protected static final String baseUrl = "https://openapi.api.govee.com/";
+	protected static final String baseUrl = "https://openapi.api.govee.com/router/api/v1/";
 
 	private static GoveeApi instance;
 
@@ -80,8 +85,22 @@ public class GoveeApi {
 	}
 
 	public GoveeGetDevicesResponse getDevices() throws IOException {
-		try (Response response = OkHttpUtil.getSynchronous(baseUrl + "router/api/v1/user/devices", addAuth())) {
+		try (Response response = OkHttpUtil.getSynchronous(baseUrl + "user/devices", addAuth())) {
 			return parseResponse(response, GoveeGetDevicesResponse.class);
+		}
+	}
+
+	public GoveeDeviceStatusResponse getDeviceStatus(String sku, String deviceId) throws IOException {
+		try (Response response = OkHttpUtil.postSynchronous(
+				baseUrl + "device/state",
+				RequestBody.create(URLDecoder.decode(
+								getMoshi()
+										.adapter(GoveeDeviceStatusRequest.class)
+										.toJson(new GoveeDeviceStatusRequest(sku, deviceId)),
+								StandardCharsets.UTF_8.displayName())
+						.getBytes(StandardCharsets.UTF_8)),
+				addAuth())) {
+			return parseResponse(response, GoveeDeviceStatusResponse.class);
 		}
 	}
 }

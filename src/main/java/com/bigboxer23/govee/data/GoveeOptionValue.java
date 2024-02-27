@@ -5,5 +5,5 @@ import lombok.Data;
 /** */
 @Data
 public class GoveeOptionValue {
-	private int value;
+	private Object value;
 }
