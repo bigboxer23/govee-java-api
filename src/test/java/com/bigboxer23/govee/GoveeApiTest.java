@@ -1,12 +1,12 @@
 package com.bigboxer23.govee;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.bigboxer23.govee.data.GoveeDevice;
 import com.bigboxer23.utils.properties.PropertyUtils;
 import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /** */
 public class GoveeApiTest {
@@ -25,7 +25,9 @@ public class GoveeApiTest {
 
 	@Test
 	public void getDeviceStatus() throws IOException {
-		GoveeDevice device = GoveeApi.getInstance(API_KEY).getDeviceStatus(TEST_SKU, TEST_DEVICEID).getDevice();
+		GoveeDevice device = GoveeApi.getInstance(API_KEY)
+				.getDeviceStatus(TEST_SKU, TEST_DEVICEID)
+				.getDevice();
 		assertNotNull(device);
 		assertEquals(TEST_SKU, device.getSku());
 		assertEquals(TEST_DEVICEID, device.getDevice());
