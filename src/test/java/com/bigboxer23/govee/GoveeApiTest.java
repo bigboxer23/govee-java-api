@@ -37,6 +37,34 @@ public class GoveeApiTest {
 	}
 
 	@Test
+	public void humidifierModeSet() throws IOException {
+		// Manual
+		GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
+				.sendDeviceCommand(IHumidifierCommands.setManualHumidityMode(TEST_MODEL, TEST_DEVICEID, 1));
+		assertNotNull(response);
+		assertEquals("success", response.getCapability().getState().getStatus());
+
+		// Invalid
+		try {
+			GoveeApi.getInstance(API_KEY)
+					.sendDeviceCommand(IHumidifierCommands.setManualHumidityMode(TEST_MODEL, TEST_DEVICEID, 0));
+			fail();
+		} catch (IOException e) {
+		}
+
+		// Auto
+		response = GoveeApi.getInstance(API_KEY)
+				.sendDeviceCommand(IHumidifierCommands.setAutoHumidityMode(TEST_MODEL, TEST_DEVICEID));
+		assertNotNull(response);
+		assertEquals("success", response.getCapability().getState().getStatus());
+
+		response = GoveeApi.getInstance(API_KEY)
+				.sendDeviceCommand(IHumidifierCommands.setAutoHumidityTargetPercent(TEST_MODEL, TEST_DEVICEID, 40));
+		assertNotNull(response);
+		assertEquals("success", response.getCapability().getState().getStatus());
+	}
+
+	@Test
 	public void humidifierOnOff() throws IOException {
 		// On
 		GoveeDeviceCommandResponse response =
