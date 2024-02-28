@@ -59,6 +59,17 @@ GoveeApi.getInstance(API_KEY)
 	    .sendDeviceCommand(IHumidifierCommands.setAutoHumidityTargetPercent(TEST_MODEL, TEST_DEVICEID, 42));
 ```
 
+7. Subscribing to Govee events
+
+```
+GoveeApi.getInstance(API_KEY).subscribeToGoveeEvents(new GoveeEventSubscriber() {
+        @Override
+        public void messageReceived(GoveeEvent event) {
+            //TODO: do something with the received event
+        }
+    });
+```
+
 ### Running tests
 
 1. Create an `application.properties` file in `/src/test/resources/application.properties`
