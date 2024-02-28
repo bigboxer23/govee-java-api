@@ -6,4 +6,6 @@ import lombok.Data;
 @Data
 public class GoveeOptionValue {
 	private Object value;
+
+	private String status;
 }

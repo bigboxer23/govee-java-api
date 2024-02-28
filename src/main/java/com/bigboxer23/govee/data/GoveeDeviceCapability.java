@@ -16,4 +16,12 @@ public class GoveeDeviceCapability {
 	private GoveeParamenters parameters;
 
 	private GoveeOptionValue state;
+
+	private Object value;
+
+	public GoveeDeviceCapability(String type, String instance, Object value) {
+		setType(type);
+		setInstance(instance);
+		setValue(value);
+	}
 }

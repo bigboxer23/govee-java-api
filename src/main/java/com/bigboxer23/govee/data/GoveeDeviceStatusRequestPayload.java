@@ -9,10 +9,13 @@ public class GoveeDeviceStatusRequestPayload {
 
 	private String device;
 
+	private GoveeDeviceCapability capability;
+
 	public GoveeDeviceStatusRequestPayload() {}
 
-	public GoveeDeviceStatusRequestPayload(String sku, String deviceId) {
+	public GoveeDeviceStatusRequestPayload(String sku, String deviceId, GoveeDeviceCapability capability) {
 		setSku(sku);
 		setDevice(deviceId);
+		setCapability(capability);
 	}
 }

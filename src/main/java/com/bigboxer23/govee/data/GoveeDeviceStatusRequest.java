@@ -11,8 +11,12 @@ public class GoveeDeviceStatusRequest {
 
 	public GoveeDeviceStatusRequest() {}
 
-	public GoveeDeviceStatusRequest(String sku, String deviceId) {
+	public GoveeDeviceStatusRequest(String sku, String deviceId, GoveeDeviceCapability capability) {
 		setRequestId("uuid");
-		setPayload(new GoveeDeviceStatusRequestPayload(sku, deviceId));
+		setPayload(new GoveeDeviceStatusRequestPayload(sku, deviceId, capability));
+	}
+
+	public GoveeDeviceStatusRequest(String sku, String deviceId) {
+		this(sku, deviceId, null);
 	}
 }

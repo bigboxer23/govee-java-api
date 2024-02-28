@@ -29,6 +29,20 @@ GoveeDevice device = GoveeApi.getInstance(API_KEY)
 				.getDevice();
 ```
 
+3. Turning on a humidifier:
+
+```
+GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
+				.sendDeviceCommand(IHumidifierCommands.turnOn(TEST_MODEL, TEST_DEVICEID));
+```
+
+4. Turning off a humidifier:
+
+```
+GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
+				.sendDeviceCommand(IHumidifierCommands.turnOff(TEST_MODEL, TEST_DEVICEID));
+```
+
 ### Running tests
 
 1. Create an `application.properties` file in `/src/test/resources/application.properties`
