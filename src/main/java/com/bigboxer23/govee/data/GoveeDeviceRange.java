@@ -10,4 +10,9 @@ public class GoveeDeviceRange {
 	private int max;
 
 	private int precision;
+
+	public GoveeDeviceRange(int min, int max) {
+		setMin(min);
+		setMax(max);
+	}
 }

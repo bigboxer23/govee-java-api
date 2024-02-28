@@ -25,22 +25,38 @@ List<GoveeDevice> devices = GoveeApi.getInstance(API_KEY).getDevices().getData()
 
 ```
 GoveeDevice device = GoveeApi.getInstance(API_KEY)
-				.getDeviceStatus(TEST_SKU, TEST_DEVICEID)
-				.getDevice();
+		.getDeviceStatus(TEST_SKU, TEST_DEVICEID)
+		.getDevice();
 ```
 
 3. Turning on a humidifier:
 
 ```
 GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
-				.sendDeviceCommand(IHumidifierCommands.turnOn(TEST_MODEL, TEST_DEVICEID));
+		.sendDeviceCommand(IHumidifierCommands.turnOn(TEST_MODEL, TEST_DEVICEID));
 ```
 
 4. Turning off a humidifier:
 
 ```
 GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
-				.sendDeviceCommand(IHumidifierCommands.turnOff(TEST_MODEL, TEST_DEVICEID));
+		.sendDeviceCommand(IHumidifierCommands.turnOff(TEST_MODEL, TEST_DEVICEID));
+```
+
+5. Setting humidifier manual mode:
+
+```
+GoveeDeviceCommandResponse response = GoveeApi.getInstance(API_KEY)
+		.sendDeviceCommand(IHumidifierCommands.setManualHumidityMode(TEST_MODEL, TEST_DEVICEID, 1));
+```
+
+6. Setting humidifier auto mode:
+
+```
+GoveeApi.getInstance(API_KEY)
+        .sendDeviceCommand(IHumidifierCommands.setAutoHumidityMode(TEST_MODEL, TEST_DEVICEID));
+GoveeApi.getInstance(API_KEY)
+	    .sendDeviceCommand(IHumidifierCommands.setAutoHumidityTargetPercent(TEST_MODEL, TEST_DEVICEID, 42));
 ```
 
 ### Running tests
