@@ -1,8 +1,14 @@
 package com.bigboxer23.govee;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.bigboxer23.govee.data.*;
 import com.bigboxer23.utils.http.OkHttpUtil;
 import com.bigboxer23.utils.http.RequestBuilderCallback;
+import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
+import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
+import com.hivemq.client.mqtt.mqtt3.message.auth.Mqtt3SimpleAuth;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -16,13 +22,17 @@ import org.slf4j.LoggerFactory;
 /** */
 public class GoveeApi {
 	private static final Logger logger = LoggerFactory.getLogger(GoveeApi.class);
-	protected static final String baseUrl = "https://openapi.api.govee.com/router/api/v1/";
+	private static final String API_URL = "https://openapi.api.govee.com/router/api/v1/";
+
+	private static final String MQTT_URL = "mqtt.openapi.govee.com";
+
+	private static final int MQTT_PORT = 8883;
 
 	private static GoveeApi instance;
 
 	private final String apiKey;
 
-	private final Moshi moshi = new Moshi.Builder().build();
+	public static final Moshi moshi = new Moshi.Builder().build();
 
 	private GoveeApi(String apiKey) {
 		this.apiKey = apiKey;
@@ -82,14 +92,14 @@ public class GoveeApi {
 	}
 
 	public GoveeGetDevicesResponse getDevices() throws IOException {
-		try (Response response = OkHttpUtil.getSynchronous(baseUrl + "user/devices", addAuth())) {
+		try (Response response = OkHttpUtil.getSynchronous(API_URL + "user/devices", addAuth())) {
 			return parseResponse(response, GoveeGetDevicesResponse.class);
 		}
 	}
 
 	public GoveeDeviceStatusResponse getDeviceStatus(String model, String deviceId) throws IOException {
 		try (Response response = OkHttpUtil.postSynchronous(
-				baseUrl + "device/state",
+				API_URL + "device/state",
 				RequestBody.create(URLDecoder.decode(
 								getMoshi()
 										.adapter(GoveeDeviceStatusRequest.class)
@@ -103,7 +113,7 @@ public class GoveeApi {
 
 	public GoveeDeviceCommandResponse sendDeviceCommand(GoveeDeviceStatusRequest command) throws IOException {
 		try (Response response = OkHttpUtil.postSynchronous(
-				baseUrl + "device/control",
+				API_URL + "device/control",
 				RequestBody.create(URLDecoder.decode(
 								getMoshi()
 										.adapter(GoveeDeviceStatusRequest.class)
@@ -113,5 +123,44 @@ public class GoveeApi {
 				addAuth())) {
 			return parseResponse(response, GoveeDeviceCommandResponse.class);
 		}
+	}
+
+	public void subscribeToGoveeEvents(IGoveeEventSubscriber subscriber) {
+		Mqtt3AsyncClient client = Mqtt3Client.builder()
+				.identifier(apiKey)
+				.serverHost(MQTT_URL)
+				.serverPort(MQTT_PORT)
+				.sslConfig()
+				.applySslConfig()
+				.simpleAuth(Mqtt3SimpleAuth.builder()
+						.username(apiKey)
+						.password(apiKey.getBytes(UTF_8))
+						.build())
+				.buildAsync();
+
+		client.publishes(MqttGlobalPublishFilter.ALL, publish -> {
+			logger.info("subscribeToGoveeEvents:message received");
+			try {
+				subscriber.messageReceived(publish);
+			} catch (IOException e) {
+				logger.warn("subscribeToGoveeEvents", e);
+			}
+		});
+
+		client.connect()
+				.thenCompose(connAck -> {
+					logger.info("subscribeToGoveeEvents:successful connection");
+					subscriber.successfulConnection(connAck);
+					return client.subscribeWith().topicFilter("GA/" + apiKey).send();
+				})
+				.thenRun(() -> {
+					logger.info("subscribeToGoveeEvents:successful subscription");
+					subscriber.successfulSubscription();
+				})
+				.exceptionally(throwable -> {
+					logger.error("subscribeToGoveeEvents", throwable);
+					subscriber.exception(throwable);
+					return null;
+				});
 	}
 }

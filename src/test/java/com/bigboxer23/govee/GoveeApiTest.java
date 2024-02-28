@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.bigboxer23.govee.data.GoveeDevice;
 import com.bigboxer23.govee.data.GoveeDeviceCommandResponse;
 import com.bigboxer23.govee.data.GoveeDeviceStatusRequest;
+import com.bigboxer23.govee.data.GoveeEvent;
 import com.bigboxer23.utils.properties.PropertyUtils;
 import java.io.IOException;
 import java.util.List;
@@ -102,5 +103,31 @@ public class GoveeApiTest {
 			fail();
 		} catch (IOException e) {
 		}
+	}
+
+	/**
+	 * Note for this test to pass, an event from govee needs to be triggered within 1m
+	 *
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void subscribeToGoveeEvents() throws IOException, InterruptedException {
+		Boolean[] success = {false};
+		GoveeApi.getInstance(API_KEY).subscribeToGoveeEvents(new GoveeEventSubscriber() {
+			@Override
+			public void messageReceived(GoveeEvent event) {
+				success[0] = true;
+			}
+		});
+
+		for (int ai = 0; ai < 60; ai++) {
+			if (success[0]) {
+				return;
+			}
+			Thread.sleep(1000);
+			System.out.println("waiting for event " + ai);
+		}
+		fail();
 	}
 }
