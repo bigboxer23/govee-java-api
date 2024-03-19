@@ -1,8 +1,7 @@
 package com.bigboxer23.govee.data;
 
-import java.util.List;
-
 import com.squareup.moshi.Json;
+import java.util.List;
 import lombok.Data;
 
 /** */
