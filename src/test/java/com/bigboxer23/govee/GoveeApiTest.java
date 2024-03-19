@@ -32,8 +32,8 @@ public class GoveeApiTest {
 				.getDeviceStatus(TEST_MODEL, TEST_DEVICEID)
 				.getDevice();
 		assertNotNull(device);
-		assertEquals(TEST_MODEL, device.getSku());
-		assertEquals(TEST_DEVICEID, device.getDevice());
+		assertEquals(TEST_MODEL, device.getModel());
+		assertEquals(TEST_DEVICEID, device.getDeviceId());
 		assertFalse(device.getCapabilities().isEmpty());
 	}
 

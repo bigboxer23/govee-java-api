@@ -38,10 +38,10 @@ public class GoveeApi {
 		this.apiKey = apiKey;
 	}
 
-	public static GoveeApi getInstance(String apiKey) throws IOException {
+	public static GoveeApi getInstance(String apiKey) {
 		if (apiKey == null) {
 			logger.error("need to define apiKey.");
-			throw new IOException("need to define apiKey.");
+			throw new RuntimeException("need to define apiKey.");
 		}
 		return Optional.ofNullable(instance).orElseGet(() -> {
 			instance = new GoveeApi(apiKey);
