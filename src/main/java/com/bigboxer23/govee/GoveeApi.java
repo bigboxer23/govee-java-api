@@ -136,6 +136,9 @@ public class GoveeApi {
 						.username(apiKey)
 						.password(apiKey.getBytes(UTF_8))
 						.build())
+				.automaticReconnectWithDefaultConfig()
+				.addDisconnectedListener(context -> logger.warn("disconnected from mqtt"))
+				.addConnectedListener(context -> logger.warn("connected to mqtt"))
 				.buildAsync();
 
 		client.publishes(MqttGlobalPublishFilter.ALL, publish -> {
@@ -146,15 +149,14 @@ public class GoveeApi {
 				logger.warn("subscribeToGoveeEvents", e);
 			}
 		});
-
 		client.connect()
 				.thenCompose(connAck -> {
-					logger.info("subscribeToGoveeEvents:successful connection");
+					logger.info("subscribeToGoveeEvents: successful connection");
 					subscriber.successfulConnection(connAck);
 					return client.subscribeWith().topicFilter("GA/" + apiKey).send();
 				})
 				.thenRun(() -> {
-					logger.info("subscribeToGoveeEvents:successful subscription");
+					logger.info("subscribeToGoveeEvents: successful subscription");
 					subscriber.successfulSubscription();
 				})
 				.exceptionally(throwable -> {
