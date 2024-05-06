@@ -17,9 +17,9 @@ jobs:
         run: |
           echo "done!"
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: softprops/action-gh-release@v2
         with:
-          repo_token: "${{ secrets.PAT }}"
+          token: "${{ secrets.PAT }}"
           prerelease: false
           files: |
             LICENSE.txt
