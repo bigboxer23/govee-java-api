@@ -5,6 +5,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.bigboxer23.govee.data.*;
 import com.bigboxer23.utils.http.OkHttpUtil;
 import com.bigboxer23.utils.http.RequestBuilderCallback;
+import com.bigboxer23.utils.time.ITimeConstants;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 import com.hivemq.client.mqtt.mqtt3.Mqtt3Client;
@@ -13,7 +14,10 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.slf4j.Logger;
@@ -33,6 +37,10 @@ public class GoveeApi {
 	private final String apiKey;
 
 	public static final Moshi moshi = new Moshi.Builder().build();
+
+	private Map<String, String> deviceIdToNames;
+
+	private long deviceIdToNamesCacheTime = -1;
 
 	private GoveeApi(String apiKey) {
 		this.apiKey = apiKey;
@@ -164,5 +172,28 @@ public class GoveeApi {
 					subscriber.exception(throwable);
 					return null;
 				});
+	}
+
+	private synchronized void refreshDeviceNameMap() {
+		if (deviceIdToNames != null && (System.currentTimeMillis() - ITimeConstants.HOUR) < deviceIdToNamesCacheTime) {
+			return;
+		}
+		try {
+			logger.info("Refreshing govee device id/name map...");
+			deviceIdToNames = Collections.unmodifiableMap(getDevices().getData().stream()
+					.collect(Collectors.toMap(GoveeDevice::getDeviceId, GoveeDevice::getDeviceName)));
+			deviceIdToNamesCacheTime = System.currentTimeMillis();
+		} catch (IOException e) {
+			logger.error("Failed to refresh device names.", e);
+			deviceIdToNames = null;
+			deviceIdToNamesCacheTime = -1;
+		}
+	}
+
+	public String getDeviceNameFromId(String deviceId) {
+		refreshDeviceNameMap();
+		return Optional.ofNullable(deviceIdToNames)
+				.map(m -> m.getOrDefault(deviceId, deviceId))
+				.orElse(deviceId);
 	}
 }
