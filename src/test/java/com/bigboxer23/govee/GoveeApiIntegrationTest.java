@@ -9,10 +9,11 @@ import com.bigboxer23.govee.data.GoveeEvent;
 import com.bigboxer23.utils.properties.PropertyUtils;
 import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-/** */
-public class GoveeApiTest {
+@Tag("integration")
+public class GoveeApiIntegrationTest {
 	private static final String API_KEY = PropertyUtils.getProperty("govee_api_key");
 
 	private static final String TEST_MODEL = PropertyUtils.getProperty("govee_device_model");

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.slf4j.Logger;
@@ -26,7 +27,9 @@ import org.slf4j.LoggerFactory;
 /** */
 public class GoveeApi {
 	private static final Logger logger = LoggerFactory.getLogger(GoveeApi.class);
-	private static final String API_URL = "https://openapi.api.govee.com/router/api/v1/";
+
+	@Setter
+	private static String apiUrl = "https://openapi.api.govee.com/router/api/v1/";
 
 	private static final String MQTT_URL = "mqtt.openapi.govee.com";
 
@@ -100,14 +103,14 @@ public class GoveeApi {
 	}
 
 	public GoveeGetDevicesResponse getDevices() throws IOException {
-		try (Response response = OkHttpUtil.getSynchronous(API_URL + "user/devices", addAuth())) {
+		try (Response response = OkHttpUtil.getSynchronous(apiUrl + "user/devices", addAuth())) {
 			return parseResponse(response, GoveeGetDevicesResponse.class);
 		}
 	}
 
 	public GoveeDeviceStatusResponse getDeviceStatus(String model, String deviceId) throws IOException {
 		try (Response response = OkHttpUtil.postSynchronous(
-				API_URL + "device/state",
+				apiUrl + "device/state",
 				RequestBody.create(URLDecoder.decode(
 								getMoshi()
 										.adapter(GoveeDeviceStatusRequest.class)
@@ -121,7 +124,7 @@ public class GoveeApi {
 
 	public GoveeDeviceCommandResponse sendDeviceCommand(GoveeDeviceStatusRequest command) throws IOException {
 		try (Response response = OkHttpUtil.postSynchronous(
-				API_URL + "device/control",
+				apiUrl + "device/control",
 				RequestBody.create(URLDecoder.decode(
 								getMoshi()
 										.adapter(GoveeDeviceStatusRequest.class)
