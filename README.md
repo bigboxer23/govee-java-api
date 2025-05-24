@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/bigboxer23/govee-java-api/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/bigboxer23/govee-java-api/actions/workflows/unit-tests.yml)
+[![Build Status](https://github.com/bigboxer23/govee-java-api/actions/workflows/unittest.yml/badge.svg)](https://github.com/bigboxer23/govee-java-api/actions/workflows/unittest.yml)
 [![CodeQL](https://github.com/bigboxer23/govee-java-api/actions/workflows/codeql.yml/badge.svg)](https://github.com/bigboxer23/govee-java-api/actions/workflows/codeql.yml)
 
 # govee-java-api
