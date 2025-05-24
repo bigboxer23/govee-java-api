@@ -4,7 +4,7 @@
 
   <groupId>com.bigboxer23</groupId>
   <artifactId>govee-java-api</artifactId>
-  <version>1.1.6</version>
+  <version>1.1.7</version>
 
   <name>govee-java-api</name>
   <url>https://github.com/bigboxer23/govee-java-api</url>
