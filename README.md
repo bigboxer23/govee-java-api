@@ -1,3 +1,6 @@
+[![Build Status](https://github.com/bigboxer23/govee-java-api/actions/workflows/unittest.yml/badge.svg)](https://github.com/bigboxer23/govee-java-api/actions/workflows/unittest.yml)
+[![CodeQL](https://github.com/bigboxer23/govee-java-api/actions/workflows/codeql.yml/badge.svg)](https://github.com/bigboxer23/govee-java-api/actions/workflows/codeql.yml)
+
 # govee-java-api
 
 This project provides a java wrapper over the Govee v1.0 API (https://developer.govee.com/ and https://govee-public.s3.amazonaws.com/developer-docs/GoveeDeveloperAPIReference.pdf).
