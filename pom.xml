@@ -76,9 +76,7 @@
   </repositories>
   <build>
     <pluginManagement>
-      <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.4.1</version>
@@ -96,8 +94,54 @@
           </configuration>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.5.3</version>
+          <configuration>
+            <includes>
+              <include>**/*IT.java</include>
+              <include>**/*ITCase.java</include>
+              <include>**/*IntegrationTest.java</include>
+            </includes>
+            <parallel>methods</parallel>
+            <threadCount>4</threadCount>
+            <useUnlimitedThreads>false</useUnlimitedThreads>
+            <rerunFailingTestsCount>1</rerunFailingTestsCount>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-tests</id>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+              <phase>integration-test</phase>
+            </execution>
+            <execution>
+              <id>verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+              <phase>verify</phase>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.3</version>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+              <include>**/*Tests.java</include>
+            </includes>
+            <excludes>
+              <exclude>**/*IT.java</exclude>
+              <exclude>**/*ITCase.java</exclude>
+              <exclude>**/*IntegrationTest.java</exclude>
+            </excludes>
+            <parallel>methods</parallel>
+            <threadCount>4</threadCount>
+            <useUnlimitedThreads>false</useUnlimitedThreads>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
